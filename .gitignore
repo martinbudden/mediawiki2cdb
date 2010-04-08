@@ -1,0 +1,7 @@
+*.pyc
+.figleaf
+interesting_files.txt
+cdb/*
+cdb2/*
+refcode/*
+xml/*
