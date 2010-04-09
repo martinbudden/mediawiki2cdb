@@ -1,8 +1,7 @@
-Example
-=======
+mediawiki2cdb
+=============
 
-This is a example github Python project. It is a template to allow easy creation of a new project - just copy it and amend as necessary.
-
+Parse MediaWiki exported XML files and convert them to .cdb files for meta-analysis
 
 Installation
 ------------
