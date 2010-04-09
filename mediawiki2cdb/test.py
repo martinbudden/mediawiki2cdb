@@ -23,11 +23,13 @@ class MyPrettyPrinter(pprint.PrettyPrinter):
 
 
 def printOutput(handler):
-	print "====Output==="
+	print "====Output2==="
 	mpp = MyPrettyPrinter()
-	#print "\npages:"
+	print "\npages:"
 	#mpp.pprint(handler.pages)
-	
+	for p in handler.pages:
+		print "'"+p+"':{'id':"+str(handler.pages[p]['id'])+"},"
+
 	print "\npageRedirects:"
 	mpp.pprint(handler.pageRedirects)
 	#print "\ntalkpages:"
@@ -62,7 +64,7 @@ def printPage(handler,pageName):
 
 
 def readCdbs(projectName,pageName):
-	reader = WikiCdbReader()
+	reader = WikiCdbReader("../cdb")
 	reader.printCdbFile("../cdb/projects.cdb")
 	reader.printCdbFile("../cdb/pages.cdb")
 	reader.printCdbIdFile("../cdb/projectIds.cdb")
@@ -97,13 +99,13 @@ def example_function(param):
     #parseXmlFile("../../enwiki/enwiki-20081008-pages-meta-current.xml")
     #readCdbs(None,pageName)
     #reader = WikiCdbReader()
-    pageName = "Cell nucleus"
-    info = parseXmlFile("../xml/export3.xml")
+    info = parseXmlFile("../xml/export.xml")
     printOutput(info)
     printOutputIds(info)
+    pageName = "Cell nucleus"
     printPage(info,pageName)
 
-    writer = WikiCdbWriter()
+    writer = WikiCdbWriter("../cdb")
     writer.writeCdbFiles(info)
     readCdbs("EvolWikiProject",pageName)
 

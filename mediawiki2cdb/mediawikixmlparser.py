@@ -1,6 +1,9 @@
 #!/bin/env python
 #coding=utf-8
-# file: mediawikixmltocdb.py
+# file: mediawikixmlparser.py
+"""
+MediaWiki XML export parser
+"""
 
 #!!! need to deal with normalization of link titles
 
@@ -10,7 +13,7 @@ import re
 import sys
 import time
 
-class WikiHandler(xml.sax.handler.ContentHandler):
+class MediaWikiHandler(xml.sax.handler.ContentHandler):
 	def __init__(self):
 		self.stack = []
 		self.elementIndex =0
@@ -22,10 +25,10 @@ class WikiHandler(xml.sax.handler.ContentHandler):
 		self.nextId = long(-1)
 		self.title = ""
 		self.text = ""
-		self.pages = {}
+		self.pages = {} # pageFromName
 		self.pageRedirects = {}
-		self.templates = {}
-		self.templateRedirects = {}
+		self.templates = {} #templateIdFromName
+		self.templateRedirects = {} #templateRedirectFromName
 		self.talkpages = {}
 
 	def startElement(self, name, attributes):
@@ -162,113 +165,6 @@ class WikiHandler(xml.sax.handler.ContentHandler):
 		return pagelinks
 
 
-class WikiInfo():
-	def __init__(self):
-		self.pages = {}
-		self.pageRedirects = {}
-		self.templates = {}
-		self.templateRedirects = {}
-		self.talkpages = {}
-		# derived dictionaries
-		self.pageIds = {}
-		self.templateIds = {}
-
-	def set(self,handler):
-		self.pages = handler.pages
-		self.pageRedirects = handler.pageRedirects
-		self.templates = handler.templates
-		self.templateRedirects = handler.templateRedirects
-		self.talkpages = handler.talkpages
-	def doStuff(self):
-		self.setTemplateIds()
-		self.replaceRedirects()
-		self.setPageLinkIds()
-		self.setPageProjectIds()
-
-	def replaceTemplateRedirects(self):
-		# go through the templates of every talk page, replacing redirected template names with the primary template name
-		for i in self.talkpages:
-			projects = {}
-			p = self.talkpages[i]['projects']
-			for j in p:
-				name = j
-				while name in self.templateRedirects:
-					name = self.templateRedirects[name]['redirect']
-				projects[name] = p[j]
-			self.talkpages[i]['projects'] = projects
-
-	def replacePageRedirects(self):
-		# go through the links of every page, replacing redirected page names with the primary page name
-		for i in self.pages:
-			links = set()
-			p = self.pages[i]['links']
-			for j in p:
-				name = j
-				while name in self.pageRedirects:
-					name = self.pageRedirects[name]['redirect']
-				links.add(name)
-			#pagelinks.sort()
-			self.pages[i]['links'] = links
-
-	def setPageLinkIds(self):
-		print "setPageLinkIds"
-		for i in self.pages:
-			linkIds = set()
-			links = self.pages[i]['links']
-			for j in links:
-				if j in self.pages:
-					linkId = self.pages[j]['id']
-					linkIds.add(linkId)
-				else:
-					linkId = j
-					normalizedJ = j[0].upper() + j[1:].replace('_',' ') if len(j) > 1 else j[0].upper()
-					if normalizedJ in self.pages:
-						linkId = self.pages[normalizedJ]['id']
-						linkIds.add(linkId)
-				#linkIds.add(linkId)
-			self.pageIds[self.pages[i]['id']] = {'name':i,'linkIds':linkIds}
-
-	def setPageProjectIds(self):
-		print "setProjectIds"
-		for i in self.pageIds:
-			name = self.pageIds[i]['name']
-			projectIds = {}
-			try:
-				projects = self.talkpages[name]['projects']
-			except:
-				projects = {}
-			cls = -1
-			imp = -1
-			for j in projects:
-				id = None
-				if j in self.templates:
-					id = self.templates[j]['id']
-				else:
-					normalizedJ = j[0].upper() + j[1:].replace('_',' ') if len(j) > 1 else j[0].upper()
-					if normalizedJ in self.templates:
-						id = self.templates[normalizedJ]['id']
-				p = projects[j]
-				if id:
-					projectIds[id] = p
-				#else:
-				#	print "no template for project:"+j
-				if p['class'] > cls:
-					cls = p['class']
-				if p['importance'] > imp:
-					imp = p['importance']
-			self.pageIds[i]['projects'] = projectIds
-			self.pageIds[i]['importance'] = imp
-			self.pageIds[i]['class'] = cls
-
-	def setTemplateIds(self):
-		print "setTemplateIds"
-		for i in self.templates:
-			self.templateIds[self.templates[i]['id']] = {'name':i}
-
-	def replaceRedirects(self):
-		self.replaceTemplateRedirects()
-		self.replacePageRedirects()
-
 
 def parseMediaWikiXMLExport(filename):
 	"""
@@ -279,7 +175,7 @@ def parseMediaWikiXMLExport(filename):
 	self.templates[title] = {'id':self.id}
 	self.templateRedirects[title] = {'id':self.id,'redirect':redirect}
 	"""
-	handler = WikiHandler()
+	handler = MediaWikiHandler()
 	parser = xml.sax.make_parser()
 	parser.setContentHandler(handler)
 	try:
@@ -288,22 +184,5 @@ def parseMediaWikiXMLExport(filename):
 		print "caught"
 	return handler
 
-
-def parseXmlFile(fileName):
-	t0 = time.time()
-	handler = parseMediaWikiXMLExport(fileName)
-	t1 = time.time()
-	print "Time1:",t1 - t0
-	sys.stderr.write("Time:" + str(t1 - t0) + "\n")
-
-	info = WikiInfo()
-	info.set(handler)
-	info.doStuff()
-
-	
-	t2 = time.time()
-	print "Time2:",t2 - t1
-	sys.stderr.write("Time:" + str(t2 - t1) + "\n")
-	return info
 
 

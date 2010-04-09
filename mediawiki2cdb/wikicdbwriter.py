@@ -8,7 +8,7 @@ import cdb
 
 
 class WikiCdbWriter():
-	def writeCdbNameId(self,filename,dictionary):
+	def writeCdbIdFromName(self,filename,dictionary):
 		maker = cdb.cdbmake(filename, filename + ".tmp")
 		s = struct.Struct("<l")
 		for i in dictionary:
@@ -17,7 +17,7 @@ class WikiCdbWriter():
 		maker.finish()
 		del(maker)
 
-	def writeCdbIdName(self,filename,dictionary):
+	def writeCdbNameFromId(self,filename,dictionary):
 		maker = cdb.cdbmake(filename, filename + ".tmp")
 		s = struct.Struct("<l")
 		for i in dictionary:
@@ -26,14 +26,14 @@ class WikiCdbWriter():
 		maker.finish()
 		del(maker)
 
-	def writeCdbPageLinks(self,filename,pageIds):
+	def writeCdbPageLinks(self,filename,pageFromId):
 		maker = cdb.cdbmake(filename, filename + ".tmp")
 		s = struct.Struct("<l")
-		for i in pageIds:
-			linkIds = pageIds[i]['linkIds']
+		for i in pageFromId:
+			linkIds = pageFromId[i]['linkIds']
 			buf = create_string_buffer(len(linkIds)*4+8)
 			offset = 0
-			struct.pack_into("<l",buf,offset,(pageIds[i]['class']<<8)|pageIds[i]['importance'])
+			struct.pack_into("<l",buf,offset,(pageFromId[i]['class']<<8)|pageFromId[i]['importance'])
 			offset += 4
 			for j in linkIds:
 				struct.pack_into("<l",buf,offset,j)
@@ -43,11 +43,11 @@ class WikiCdbWriter():
 		maker.finish()
 		del(maker)
 
-	def writeCdbPageProjects(self,filename,pageIds):
+	def writeCdbPageProjects(self,filename,pageFromId):
 		maker = cdb.cdbmake(filename, filename + ".tmp")
 		s = struct.Struct("<l")
-		for i in pageIds:
-			projects = pageIds[i]['projects']
+		for i in pageFromId:
+			projects = pageFromId[i]['projects']
 			buf = create_string_buffer(len(projects)*4*2+4)
 			offset = 0
 			#struct.pack_into("<l",buf,offset,len(projects))
@@ -62,15 +62,15 @@ class WikiCdbWriter():
 		maker.finish()
 		del(maker)
 
-	def writeCdbFiles(self,handler):
+	def writeCdbFiles(self,info,dir):
 		# pages: name,id file
-		self.writeCdbNameId("../cdb/pages.cdb",handler.pages)
+		self.writeCdbIdFromName(dir+"pageIdFromName.cdb",info.pages)
 		# pages: id,name file
-		self.writeCdbIdName("../cdb/pageIds.cdb",handler.pageIds)
-		self.writeCdbPageLinks("../cdb/pageLinks.cdb",handler.pageIds)
-		self.writeCdbPageProjects("../cdb/pageProjects.cdb",handler.pageIds)
+		self.writeCdbNameFromId(dir+"pageNameFromId.cdb",info.pageFromId)
+		self.writeCdbPageLinks(dir+"pageLinksFromId.cdb",info.pageFromId)
+		self.writeCdbPageProjects(dir+"pageProjectsFromId.cdb",info.pageFromId)
 		# template: name,id file
-		self.writeCdbNameId("../cdb/projects.cdb",handler.templates)
+		self.writeCdbIdFromName(dir+"projectIdFromName.cdb",info.templates)
 		# template: id,name file
-		self.writeCdbIdName("../cdb/projectIds.cdb",handler.templateIds)
+		self.writeCdbNameFromId(dir+"projectNameFromId.cdb",info.templateFromId)
 

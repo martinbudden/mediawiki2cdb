@@ -63,6 +63,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
         for i in self.info.pageFromId:
             result = self.reader.getPageLinksFromId(i)
             print "links:",result
+        self.assertTrue(False)
 
 
     def test_getPageProjectsFromId(self):
@@ -70,6 +71,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
         for i in self.info.pageFromId: # pageFromId
             result = self.reader.getPageProjectsFromId(i)
             print "projects:",result
+        self.assertTrue(False)
 
 
 if __name__ == "__main__":

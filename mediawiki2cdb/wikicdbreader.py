@@ -7,31 +7,31 @@ import cdb
 
 
 class WikiCdbReader():
-	def __init__(self):
+	def __init__(self,dir):
 		self.struct = struct.Struct("<l")
-		self.pages = cdb.init("../cdb/pages.cdb")
-		self.pageIds = cdb.init("../cdb/pageIds.cdb")
-		self.pageLinks = cdb.init("../cdb/pageLinks.cdb")
-		self.pageProjects = cdb.init("../cdb/pageProjects.cdb")
-		self.projects = cdb.init("../cdb/projects.cdb")
-		self.projectIds = cdb.init("../cdb/projectIds.cdb")
+		self.pageIdFromName = cdb.init(dir+"pageIdFromName.cdb")
+		self.pageNameFromId = cdb.init(dir+"pageNameFromId.cdb")
+		self.pageLinksFromId = cdb.init(dir+"pageLinksFromId.cdb")
+		self.pageProjectsFromId = cdb.init(dir+"pageProjectsFromId.cdb")
+		self.projectIdFromName = cdb.init(dir+"projectIdFromName.cdb")
+		self.projectNameFromId = cdb.init(dir+"projectNameFromId.cdb")
 
-	def getPageId(self,pageName):
-		i = self.struct.unpack(self.pages.get(pageName))
+	def getPageIdFromName(self,pageName):
+		i = self.struct.unpack(self.pageIdFromName.get(pageName))
 		return i[0]
 
-	def getPageName(self,pageId):
-		return self.pageIds.get(self.struct.pack(pageId))
+	def getPageNameFromId(self,pageId):
+		return self.pageNameFromId.get(self.struct.pack(pageId))
 
-	def getProjectId(self,projectName):
-		i = self.struct.unpack(self.projects.get(projectName))
+	def getProjectIdFromName(self,projectName):
+		i = self.struct.unpack(self.projectIdFromName.get(projectName))
 		return i[0]
 
-	def getProjectName(self,projectId):
-		return self.projectIds.get(self.struct.pack(projectId))
+	def getProjectNameFromId(self,projectId):
+		return self.projectNameFromId.get(self.struct.pack(projectId))
 
-	def getPageLinks(self,pageId):
-		v = self.pageLinks.get(self.struct.pack(pageId))
+	def getPageLinksFromId(self,pageId):
+		v = self.pageLinksFromId.get(self.struct.pack(pageId))
 		t = self.struct.unpack(v[0:4])
 		offset = 4
 		page = {}
@@ -52,8 +52,8 @@ class WikiCdbReader():
 		page['links'] = pageLinks
 		return page
 
-	def getPageProjects(self,pageId):
-		v = self.pageProjects.get(self.struct.pack(pageId))
+	def getPageProjectsFromId(self,pageId):
+		v = self.pageProjectsFromId.get(self.struct.pack(pageId))
 		offset = 0
 		projects = {}
 		count = (len(v)-4)/8
