@@ -98,7 +98,7 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 					self.title.startswith("Category talk:") or\
 					self.title.startswith("Portal:") or\
 					self.title.startswith("Portal talk:"):
-				pass #x = "" # do nothing
+				pass
 			else:
 				r = self.text.lstrip()[0:9]
 				if r[0] == "#" and r.upper() == "#REDIRECT":

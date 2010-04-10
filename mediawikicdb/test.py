@@ -9,9 +9,8 @@ from optparse import OptionParser
 
 import pprint
 
-from wikicdbreader import WikiCdbReader
-from wikicdbwriter import WikiCdbWriter
-from mediawikixmltocdb import parseXmlFile
+from wikicdbreader import MediaWikiCdbReader
+from parse import parseXmlFile
 
 
 class MyPrettyPrinter(pprint.PrettyPrinter):
@@ -64,7 +63,7 @@ def printPage(handler,pageName):
 
 
 def readCdbs(projectName,pageName):
-	reader = WikiCdbReader("../cdb")
+	reader = MediaWikiCdbReader("../cdb")
 	reader.printCdbFile("../cdb/projects.cdb")
 	reader.printCdbFile("../cdb/pages.cdb")
 	reader.printCdbIdFile("../cdb/projectIds.cdb")
@@ -105,7 +104,7 @@ def example_function(param):
     pageName = "Cell nucleus"
     printPage(info,pageName)
 
-    writer = WikiCdbWriter("../cdb")
+    writer = MediaWikiCdbWriter("../cdb")
     writer.writeCdbFiles(info)
     readCdbs("EvolWikiProject",pageName)
 

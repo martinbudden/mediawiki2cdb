@@ -3,7 +3,7 @@ MediaWiki CDB dictionary test module.
 """
 
 import unittest
-from mediawikicdb.mediawikicdbdict import CdbDictIdFromName, CdbDictNameFromId, CdbDictPageLinksFromId, CdbDictPageProjectsFromId
+from mediawikicdb.mediawikicdbdict import CdbDict, CdbDictIdFromName, CdbDictNameFromId, CdbDictPageLinksFromId, CdbDictPageProjectsFromId
 
 
 class MediaWikiCDBDictTestCase(unittest.TestCase):
@@ -15,6 +15,39 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_pageCdbDict(self):
+        d = CdbDict("cdb/pageIdFromName.cdb");
+
+        # test __iter__
+        try:
+            for i in d:
+                pass
+        except NotImplementedError:
+            pass
+
+        # test __getitem__
+        try:
+            v = d[0]
+        except NotImplementedError:
+            pass
+
+        # test keys()
+        try:
+            keys = d.keys()
+        except NotImplementedError:
+            pass
+
+        # test __delitem__
+        try:
+            del d[0]
+        except TypeError:
+            pass
+
+        # test __setitem__
+        try:
+            d[0] = 0
+        except TypeError:
+            pass
 
     def test_pageFromId(self):
         """Test page ids"""
@@ -25,6 +58,18 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
             id = pageIdFromName[name]
             #print "pagei",i,"id",id,"name",name
             self.assertEqual(i,id)
+
+        # test iter
+        i = pageIdFromName.__iter__()
+        self.assertEqual(i,i.__iter__())
+
+        # test keys
+        result = pageIdFromName.keys()
+        expected = ['A', 'B', 'Genetics', 'Biochemistry', '\xc3\x86', 'EBay', 'Cell nucleus', '\xc3\x9f', 'Deoxyribonuclease I', 'DNA']
+        #self.assertEqual(result,expected)
+        result = pageNameFromId.keys()
+        expected = [290, 3783, 12266, 198274, 5507057, 3954, 7955, 184309, 6235, 130495]
+        self.assertEqual(result,expected)
 
 
     def test_pageFromName(self):

@@ -62,15 +62,15 @@ class MediaWikiCdbWriter():
 		maker.finish()
 		del(maker)
 
-	def writeCdbFiles(self,info,dir):
+	def writeCdbFiles(self,info,cdbdir):
 		# pages: name,id file
-		self.writeCdbIdFromName(dir+"pageIdFromName.cdb",info.pages)
+		self.writeCdbIdFromName(cdbdir+"pageIdFromName.cdb",info.pages)
 		# pages: id,name file
-		self.writeCdbNameFromId(dir+"pageNameFromId.cdb",info.pageFromId)
-		self.writeCdbPageLinks(dir+"pageLinksFromId.cdb",info.pageFromId)
-		self.writeCdbPageProjects(dir+"pageProjectsFromId.cdb",info.pageFromId)
+		self.writeCdbNameFromId(cdbdir+"pageNameFromId.cdb",info.pageFromId)
+		self.writeCdbPageLinks(cdbdir+"pageLinksFromId.cdb",info.pageFromId)
+		self.writeCdbPageProjects(cdbdir+"pageProjectsFromId.cdb",info.pageFromId)
 		# template: name,id file
-		self.writeCdbIdFromName(dir+"projectIdFromName.cdb",info.templates)
+		self.writeCdbIdFromName(cdbdir+"projectIdFromName.cdb",info.templates)
 		# template: id,name file
-		self.writeCdbNameFromId(dir+"projectNameFromId.cdb",info.templateFromId)
+		self.writeCdbNameFromId(cdbdir+"projectNameFromId.cdb",info.templateFromId)
 

@@ -6,7 +6,7 @@ import struct
 import cdb
 
 
-class WikiCdbReader():
+class MediaWikiCdbReader():
 	def __init__(self,dir):
 		self.struct = struct.Struct("<l")
 		self.pageIdFromName = cdb.init(dir+"pageIdFromName.cdb")
