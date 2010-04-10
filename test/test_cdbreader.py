@@ -4,7 +4,8 @@ MediaWiki CDB reader test module.
 
 
 import unittest
-from mediawiki2cdb import mediawikixmlparser,wikiinfo,wikicdbwriter,wikicdbreader
+from mediawikicdb import mediawikixmlparser,wikiinfo,mediawikicdbwriter,wikicdbreader
+from mediawikicdb.mediawikicdbdict import CdbDictIdFromName, CdbDictNameFromId, CdbDictPageLinksFromId, CdbDictPageProjectsFromId
 
 
 class MediaWikiCDBReaderTestCase(unittest.TestCase):
@@ -15,7 +16,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
         self.info = wikiinfo.WikiInfo()
         self.info.set(self.handler.pages,self.handler.pageRedirects,self.handler.templates,self.handler.templateRedirects,self.handler.talkpages)
         self.info.doStuff()
-        self.writer = wikicdbwriter.WikiCdbWriter()
+        self.writer = mediawikicdbwriter.MediaWikiCdbWriter()
         self.writer.writeCdbFiles(self.info,"cdb/")
         #self.reader = wikicdbreader.WikiCdbReader("cdb/")
 
@@ -26,7 +27,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
 
     def test_getPageIdFromName(self):
         """Test getting page id from page name."""
-        pageIdFromName = wikicdbreader.CdbDictIdFromName("cdb/pageIdFromName.cdb")
+        pageIdFromName = CdbDictIdFromName("cdb/pageIdFromName.cdb")
         for i in self.handler.pages: # pageFromName
             expected = self.handler.pages[i]['id']
             result = pageIdFromName[i]
@@ -36,7 +37,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
 
     def test_getPageNameFromId(self):
         """Test getting page name from page id."""
-        pageNameFromId = wikicdbreader.CdbDictNameFromId("cdb/pageNameFromId.cdb")
+        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
         for i in self.info.pageFromId: # pageFromId
             print "pageId:",i,"pageName:",self.info.pageFromId[i]['name']
             expected = self.info.pageFromId[i]['name']
@@ -47,7 +48,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
 
     def test_getProjectIdFromName(self):
         """Test getting project id from project name."""
-        projectIdFromName = wikicdbreader.CdbDictIdFromName("cdb/projectIdFromName.cdb")
+        projectIdFromName = CdbDictIdFromName("cdb/projectIdFromName.cdb")
         for i in self.handler.templates:
             expected = self.handler.templates[i]['id']
             result = projectIdFromName[i]
@@ -57,7 +58,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
 
     def test_getProjectNameFromId(self):
         """Test getting project name from project id."""
-        projectNameFromId = wikicdbreader.CdbDictNameFromId("cdb/projectNameFromId.cdb")
+        projectNameFromId = CdbDictNameFromId("cdb/projectNameFromId.cdb")
         for i in self.info.templateFromId:
             print "projectId:",i,"projectName:",self.info.templateFromId[i]['name']
             expected = self.info.templateFromId[i]['name']
@@ -68,7 +69,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
 
     def test_getPageLinksFromId(self):
         """Test getting page links from page id."""
-        pageLinksFromId = wikicdbreader.CdbDictPageLinksFromId("cdb/pageLinksFromId.cdb")
+        pageLinksFromId = CdbDictPageLinksFromId("cdb/pageLinksFromId.cdb")
         for i in self.info.pageFromId:
             result = pageLinksFromId[i]
             #result = self.reader.getPageLinksFromId(i)
@@ -78,7 +79,7 @@ class MediaWikiCDBReaderTestCase(unittest.TestCase):
 
     def test_getPageProjectsFromId(self):
         """Test getting page projects from page id."""
-        pageProjectsFromId = wikicdbreader.CdbDictPageProjectsFromId("cdb/pageProjectsFromId.cdb")
+        pageProjectsFromId = CdbDictPageProjectsFromId("cdb/pageProjectsFromId.cdb")
         for i in self.info.pageFromId: # pageFromId
             result = pageProjectsFromId[i]
             #result = self.reader.getPageProjectsFromId(i)

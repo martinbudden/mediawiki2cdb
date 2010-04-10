@@ -3,7 +3,7 @@ MediaWiki CDB dictionary test module.
 """
 
 import unittest
-from mediawiki2cdb import wikicdbreader
+from mediawikicdb.mediawikicdbdict import CdbDictIdFromName, CdbDictNameFromId, CdbDictPageLinksFromId, CdbDictPageProjectsFromId
 
 
 class MediaWikiCDBDictTestCase(unittest.TestCase):
@@ -18,8 +18,8 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_pageFromId(self):
         """Test page ids"""
-        pageIdFromName = wikicdbreader.CdbDictIdFromName("cdb/pageIdFromName.cdb")
-        pageNameFromId = wikicdbreader.CdbDictNameFromId("cdb/pageNameFromId.cdb")
+        pageIdFromName = CdbDictIdFromName("cdb/pageIdFromName.cdb")
+        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
         for i in pageNameFromId:
             name = pageNameFromId[i]
             id = pageIdFromName[name]
@@ -29,8 +29,8 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_pageFromName(self):
         """Test page names"""
-        pageIdFromName = wikicdbreader.CdbDictIdFromName("cdb/pageIdFromName.cdb")
-        pageNameFromId = wikicdbreader.CdbDictNameFromId("cdb/pageNameFromId.cdb")
+        pageIdFromName = CdbDictIdFromName("cdb/pageIdFromName.cdb")
+        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
         for i in pageIdFromName:
             id = pageIdFromName[i]
             name = pageNameFromId[id]
@@ -40,8 +40,8 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_projectFromId(self):
         """Test project ids"""
-        projectIdFromName = wikicdbreader.CdbDictIdFromName("cdb/projectIdFromName.cdb")
-        projectNameFromId = wikicdbreader.CdbDictNameFromId("cdb/projectNameFromId.cdb")
+        projectIdFromName = CdbDictIdFromName("cdb/projectIdFromName.cdb")
+        projectNameFromId = CdbDictNameFromId("cdb/projectNameFromId.cdb")
         for i in projectNameFromId:
             name = projectNameFromId[i]
             id = projectIdFromName[name]
@@ -51,8 +51,8 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_projectFromName(self):
         """Test project names"""
-        projectIdFromName = wikicdbreader.CdbDictIdFromName("cdb/projectIdFromName.cdb")
-        projectNameFromId = wikicdbreader.CdbDictNameFromId("cdb/projectNameFromId.cdb")
+        projectIdFromName = CdbDictIdFromName("cdb/projectIdFromName.cdb")
+        projectNameFromId = CdbDictNameFromId("cdb/projectNameFromId.cdb")
         for i in projectIdFromName:
             id = projectIdFromName[i]
             name = projectNameFromId[id]
@@ -62,8 +62,8 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_pageLinksFromId(self):
         """Test page links"""
-        pageLinksFromId = wikicdbreader.CdbDictPageLinksFromId("cdb/pageLinksFromId.cdb")
-        pageNameFromId = wikicdbreader.CdbDictNameFromId("cdb/pageNameFromId.cdb")
+        pageLinksFromId = CdbDictPageLinksFromId("cdb/pageLinksFromId.cdb")
+        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
         print "links"
         for i in pageLinksFromId:
             links = pageLinksFromId[i]
@@ -74,9 +74,9 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_pageProjectsFromId(self):
         """Test page projects"""
-        pageProjectsFromId = wikicdbreader.CdbDictPageProjectsFromId("cdb/pageProjectsFromId.cdb")
-        pageNameFromId = wikicdbreader.CdbDictNameFromId("cdb/pageNameFromId.cdb")
-        projectNameFromId = wikicdbreader.CdbDictNameFromId("cdb/projectNameFromId.cdb")
+        pageProjectsFromId = CdbDictPageProjectsFromId("cdb/pageProjectsFromId.cdb")
+        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
+        projectNameFromId = CdbDictNameFromId("cdb/projectNameFromId.cdb")
         print "projects"
         for i in pageProjectsFromId:
             projects = pageProjectsFromId[i]

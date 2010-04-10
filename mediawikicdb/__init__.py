@@ -1,5 +1,5 @@
 """
-mediawiki2cdb
+mediawikicdb
 """
 
 __version__ = '0.01.0'

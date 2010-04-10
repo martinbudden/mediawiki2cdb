@@ -1,10 +1,10 @@
 """
-MediaWikiInfo test module.
+MediaWiki Info test module.
 """
 
 
 import unittest
-from mediawiki2cdb import mediawikixmlparser,wikiinfo
+from mediawikicdb import mediawikixmlparser,wikiinfo
 
 
 class MediaWikiInfoTestCase(unittest.TestCase):

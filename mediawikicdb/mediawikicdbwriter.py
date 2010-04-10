@@ -1,13 +1,13 @@
 #!/bin/env python
 #coding=utf-8
-#file: wikicdbwriter.py
+#file: mediawikicdbwriter.py
 
 import struct
 from ctypes import create_string_buffer
 import cdb
 
 
-class WikiCdbWriter():
+class MediaWikiCdbWriter():
 	def writeCdbIdFromName(self,filename,dictionary):
 		maker = cdb.cdbmake(filename, filename + ".tmp")
 		s = struct.Struct("<l")

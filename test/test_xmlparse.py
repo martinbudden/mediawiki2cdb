@@ -4,8 +4,8 @@ MediaWiki XML parser test module.
 
 
 import unittest
-from mediawiki2cdb import mediawikixmlparser
-from mediawiki2cdb import test
+from mediawikicdb import mediawikixmlparser
+from mediawikicdb import test
 
 
 class MediaWikiXMLParserTestCase(unittest.TestCase):
