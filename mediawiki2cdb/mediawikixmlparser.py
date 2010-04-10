@@ -11,7 +11,6 @@ from xml.sax import make_parser, SAXException
 import xml.sax.handler
 import re
 import sys
-import time
 
 class MediaWikiHandler(xml.sax.handler.ContentHandler):
 	def __init__(self):
@@ -107,7 +106,7 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 				else:
 					self.pages[self.title] = {'id':self.id,'links':self.getPageLinks(self.text)}
 
-	def getRedirect(self,text):
+	def getRedirect(self, text):
 		redirect = ""
 		r = re.compile(r"\[\[([^#\[\]]*)")
 		m = r.search(text)
@@ -115,7 +114,7 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 			redirect = m.group(1)
 		return redirect
 
-	def getProjects(self,text):
+	def getProjects(self, text):
 		classes = {'fa':7,'ga':6,'a':5,'b':4,'c':3,'start':2,'stub':1,'list':0,'':-1}
 		imps = {'top':3,'high':2,'mid':1,'low':0,'':-1}
 		projects = {}
@@ -148,7 +147,7 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 					projects[template] = {'class':cls,'importance':importance}
 		return projects
 
-	def getPageLinks(self,text):
+	def getPageLinks(self, text):
 		pagelinks = set()
 		p = re.compile(r"\[\[([^\[\]\:]*)\]\]")
 		for match in p.finditer(text):
@@ -183,6 +182,4 @@ def parseMediaWikiXMLExport(filename):
 	except SAXException:
 		print "caught"
 	return handler
-
-
 
