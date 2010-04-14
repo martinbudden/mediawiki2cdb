@@ -36,10 +36,10 @@ class MediaWikiCdbReader():
 		offset = 4
 		page = {}
 		page['class'] = t[0] >> 8
-		imp = t[0] & 0xff
-		if imp == 0xff:
-			imp = -1
-		page['importance'] = imp
+		importance = t[0] & 0xff
+		if importance == 0xff:
+			importance = -1
+		page['importance'] = importance
 		t = self.struct.unpack(v[offset:offset+4])
 		offset += 4
 		pageLinks = set()
@@ -65,13 +65,13 @@ class MediaWikiCdbReader():
 			t = self.struct.unpack(v[offset:offset+4])
 			offset += 4
 			cls = t[0] >> 8
-			imp = t[0] & 0xff
-			if imp == 0xff:
-				imp = -1
-			projects[id] = {'class':cls, 'importance':imp}
+			importance = t[0] & 0xff
+			if importance == 0xff:
+				importance = -1
+			projects[id] = {'class':cls, 'importance':importance}
 		return projects
 
-	def printCdbFile(self,filename):
+	def printCdbFromNameFile(self,filename):
 		print "\nfile:"+filename
 		c = cdb.init(filename)
 		k = c.firstkey()
@@ -81,7 +81,7 @@ class MediaWikiCdbReader():
 			print k, "=>", hex(i[0])
 			k = c.nextkey()
 
-	def printCdbIdFile(self,filename):
+	def printCdbFromIdFile(self,filename):
 		print "\nfile:"+filename
 		c = cdb.init(filename)
 		k = c.firstkey()

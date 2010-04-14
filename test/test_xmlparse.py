@@ -13,7 +13,8 @@ class MediaWikiXMLParserTestCase(unittest.TestCase):
     def setUp(self):
         """Parse the mediawiki XML file"""
         self.handler = mediawikixmlparser.parseMediaWikiXMLExport("xml/export3.xml")
-        self.pages = {'A':{'id':290}, \
+        self.pages = { \
+            'A':{'id':290}, \
             'B':{'id':3783}, \
             'Genetics':{'id':12266}, \
             'Biochemistry':{'id':3954}, \

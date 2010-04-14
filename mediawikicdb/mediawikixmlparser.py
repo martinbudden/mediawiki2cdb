@@ -64,6 +64,7 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 				self.id = self.nextId
 				self.nextId -= 1
 			if self.title.find(":") == -1:
+				# deal with the most common case, a normal page, first
 				r = self.text.lstrip()[0:9]
 				if r[0] == "#" and r.upper() == "#REDIRECT":
 					self.pageRedirects[self.title] = {'id':self.id,'redirect':self.getRedirect(self.text)}
@@ -80,6 +81,7 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 				else:
 					self.templates[title] = {'id':self.id}
 			elif self.title.startswith("Talk:"):
+				# the projects a page belongs to are listed in its talk pages
 				self.talkpages[self.title[5:]] = {'id':self.id,'projects':self.getProjects(self.text)}
 			elif self.title.startswith("Media:") or\
 					self.title.startswith("Special:") or\
@@ -98,8 +100,10 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 					self.title.startswith("Category talk:") or\
 					self.title.startswith("Portal:") or\
 					self.title.startswith("Portal talk:"):
+				# ignore any of these namespaces
 				pass
 			else:
+				# the page is not in any namespace, so it must just be a normal page with a ":" in its title
 				r = self.text.lstrip()[0:9]
 				if r[0] == "#" and r.upper() == "#REDIRECT":
 					self.pageRedirects[self.title] = {'id':self.id,'redirect':self.getRedirect(self.text)}
@@ -123,8 +127,8 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 		c = re.compile(r"class=(\w*)")
 		for match in t.finditer(text):
 			template = match.group(1)
-			# if the template contains either a class or an importance parameter, then assume it is a project template
 			if template.find("class=")!=-1 or template.find("importance=")!=-1:
+				# if the template contains either a class or an importance parameter, then assume it is a project template
 				importance = -1
 				m = i.search(template)
 				if m:

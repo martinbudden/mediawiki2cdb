@@ -9,6 +9,7 @@ from optparse import OptionParser
 
 import pprint
 
+from mediawikicdbwriter import MediaWikiCdbWriter
 from wikicdbreader import MediaWikiCdbReader
 from parse import parseXmlFile
 
@@ -43,8 +44,8 @@ def printOutputIds(handler):
 	mpp = MyPrettyPrinter()
 	#print "\npageIds:"
 	#mpp.pprint(handler.pageIds)
-	print "\ntemplateIds:"
-	mpp.pprint(handler.templateIds)
+	#print "\ntemplateIds:"
+	#mpp.pprint(handler.templateIds)
 
 
 def printPage(handler,pageName):
@@ -54,8 +55,8 @@ def printPage(handler,pageName):
 	#print "\npage: " + pageName + ":"
 	#mpp.pprint(page)
 
-	print "\npageId: " + pageName + ":"
-	mpp.pprint(handler.pageIds[page['id']])
+	#print "\npageId: " + pageName + ":"
+	#mpp.pprint(handler.pageIds[page['id']])
 	#print "\ntalk: " + pageName + ":"
 	#mpp.pprint(handler.talkpages[pageName])
 	#print "\ntalkpages:"
@@ -63,26 +64,26 @@ def printPage(handler,pageName):
 
 
 def readCdbs(projectName,pageName):
-	reader = MediaWikiCdbReader("../cdb")
-	reader.printCdbFile("../cdb/projects.cdb")
-	reader.printCdbFile("../cdb/pages.cdb")
-	reader.printCdbIdFile("../cdb/projectIds.cdb")
+	reader = MediaWikiCdbReader("../cdb/")
+	reader.printCdbFromNameFile("../cdb/projectIdFromName.cdb")
+	reader.printCdbFromNameFile("../cdb/pageIdFromName.cdb")
+	reader.printCdbFromIdFile("../cdb/projectNameFromId.cdb")
 	if projectName:
 		print "\n\n"
 		print "Project:" + projectName
-		projectId = reader.getProjectId(projectName)
+		projectId = reader.getProjectIdFromName(projectName)
 		print "ProjectId:"+hex(projectId)
-		print "ProjectName:"+reader.getProjectName(projectId)
+		print "ProjectName:"+reader.getProjectNameFromId(projectId)
 		print "\n\n"
 	print "Page:" + pageName
-	pageId = reader.getPageId(pageName)
+	pageId = reader.getPageIdFromName(pageName)
 	print "PageId:"+hex(pageId)
-	print "PageName:"+reader.getPageName(pageId)
+	print "PageName:"+reader.getPageNameFromId(pageId)
 	print "PageLinks:"
 	mpp = MyPrettyPrinter()
-	mpp.pprint(reader.getPageLinks(pageId))
+	mpp.pprint(reader.getPageLinksFromId(pageId))
 	print "PageProjects:"
-	mpp.pprint(reader.getPageProjects(pageId))
+	mpp.pprint(reader.getPageProjectsFromId(pageId))
 	print "\n\n"
 
 
@@ -98,14 +99,14 @@ def example_function(param):
     #parseXmlFile("../../enwiki/enwiki-20081008-pages-meta-current.xml")
     #readCdbs(None,pageName)
     #reader = WikiCdbReader()
-    info = parseXmlFile("../xml/export.xml")
+    info = parseXmlFile("../xml/export3.xml")
     printOutput(info)
     printOutputIds(info)
     pageName = "Cell nucleus"
     printPage(info,pageName)
 
-    writer = MediaWikiCdbWriter("../cdb")
-    writer.writeCdbFiles(info)
+    writer = MediaWikiCdbWriter()
+    writer.writeCdbFiles(info,"../cdb/")
     readCdbs("EvolWikiProject",pageName)
 
     #pageName = "ß"

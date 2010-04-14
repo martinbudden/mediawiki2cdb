@@ -56,7 +56,6 @@ class WikiInfo():
 			self.pages[i]['links'] = links
 
 	def setPageLinkIds(self):
-		print "setPageLinkIds"
 		for i in self.pages:
 			linkIds = set()
 			links = self.pages[i]['links']
@@ -71,10 +70,9 @@ class WikiInfo():
 						linkId = self.pages[normalizedJ]['id']
 						linkIds.add(linkId)
 				#linkIds.add(linkId)
-			self.pageFromId[self.pages[i]['id']] = {'name':i,'linkIds':linkIds}
+			self.pageFromId[self.pages[i]['id']] = {'name':i,'links':linkIds}
 
 	def setPageProjectIds(self):
-		print "setProjectIds"
 		for i in self.pageFromId:
 			name = self.pageFromId[i]['name']
 			projectIds = {}
@@ -106,7 +104,6 @@ class WikiInfo():
 			self.pageFromId[i]['class'] = cls
 
 	def setTemplateFromId(self):
-		print "setTemplateIds"
 		for i in self.templates:
 			self.templateFromId[self.templates[i]['id']] = {'name':i}
 

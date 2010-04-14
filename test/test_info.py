@@ -21,7 +21,7 @@ class MediaWikiInfoTestCase(unittest.TestCase):
         pass
 
 
-    def test_pageFromId(self):
+    def test_pageIdFromId(self):
         """Test page ids"""
         for i in self.info.pageFromId:
             name = self.info.pageFromId[i]['name']
@@ -30,7 +30,7 @@ class MediaWikiInfoTestCase(unittest.TestCase):
             self.assertEqual(i,id)
 
 
-    def test_templateFromId(self):
+    def test_templateNameFromId(self):
         """Test template ids"""
         for i in self.info.templateFromId:
             name = self.info.templateFromId[i]['name']
