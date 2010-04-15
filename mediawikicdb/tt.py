@@ -15,11 +15,11 @@ import pprint
 
 
 class MyPrettyPrinter(pprint.PrettyPrinter):
-	def format(self, object, context, maxlevels, level):
-		if isinstance(object, long):
-			return hex(object), True, False
-		else:
-			return pprint.PrettyPrinter.format(self, object, context, maxlevels, level)
+    def format(self, object, context, maxlevels, level):
+        if isinstance(object, long):
+            return hex(object), True, False
+        else:
+            return pprint.PrettyPrinter.format(self, object, context, maxlevels, level)
 
 
 def example_function(param):

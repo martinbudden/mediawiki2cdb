@@ -15,76 +15,76 @@ from parse import parseXmlFile
 
 
 class MyPrettyPrinter(pprint.PrettyPrinter):
-	def format(self, object, context, maxlevels, level):
-		if isinstance(object, long):
-			return hex(object), True, False
-		else:
-			return pprint.PrettyPrinter.format(self, object, context, maxlevels, level)
+    def format(self, object, context, maxlevels, level):
+        if isinstance(object, long):
+            return hex(object), True, False
+        else:
+            return pprint.PrettyPrinter.format(self, object, context, maxlevels, level)
 
 
 def printOutput(handler):
-	print "====Output2==="
-	mpp = MyPrettyPrinter()
-	print "\npages:"
-	#mpp.pprint(handler.pages)
-	for p in handler.pages:
-		print "'" + p + "':{'id': " + str(handler.pages[p]['id']) + "},"
+    print "====Output2==="
+    mpp = MyPrettyPrinter()
+    print "\npages:"
+    #mpp.pprint(handler.pages)
+    for p in handler.pages:
+        print "'" + p + "':{'id': " + str(handler.pages[p]['id']) + "},"
 
-	print "\npageRedirects:"
-	mpp.pprint(handler.pageRedirects)
-	#print "\ntalkpages:"
-	#mpp.pprint(handler.talkpages)
-	print "\ntemplates:"
-	mpp.pprint(handler.templates)
-	print "\ntemplateRedirects:"
-	mpp.pprint(handler.templateRedirects)
+    print "\npageRedirects:"
+    mpp.pprint(handler.pageRedirects)
+    #print "\ntalkpages:"
+    #mpp.pprint(handler.talkpages)
+    print "\ntemplates:"
+    mpp.pprint(handler.templates)
+    print "\ntemplateRedirects:"
+    mpp.pprint(handler.templateRedirects)
 
 
 #def printOutputIds(handler):
-	#mpp = MyPrettyPrinter()
-	#print "\npageIds:"
-	#mpp.pprint(handler.pageIds)
-	#print "\ntemplateIds:"
-	#mpp.pprint(handler.templateIds)
+    #mpp = MyPrettyPrinter()
+    #print "\npageIds:"
+    #mpp.pprint(handler.pageIds)
+    #print "\ntemplateIds:"
+    #mpp.pprint(handler.templateIds)
 
 
 #def printPage(handler,pageName):
-	#mpp = MyPrettyPrinter()
-	#page = handler.pages[pageName]
+    #mpp = MyPrettyPrinter()
+    #page = handler.pages[pageName]
 
-	#print "\npage: " + pageName + ":"
-	#mpp.pprint(page)
+    #print "\npage: " + pageName + ":"
+    #mpp.pprint(page)
 
-	#print "\npageId: " + pageName + ":"
-	#mpp.pprint(handler.pageIds[page['id']])
-	#print "\ntalk: " + pageName + ":"
-	#mpp.pprint(handler.talkpages[pageName])
-	#print "\ntalkpages:"
-	#mpp.pprint(handler.talkpages)
+    #print "\npageId: " + pageName + ":"
+    #mpp.pprint(handler.pageIds[page['id']])
+    #print "\ntalk: " + pageName + ":"
+    #mpp.pprint(handler.talkpages[pageName])
+    #print "\ntalkpages:"
+    #mpp.pprint(handler.talkpages)
 
 
 def readCdbs(projectName, pageName):
-	reader = MediaWikiCdbReader("../cdb/")
-	reader.printCdbFromNameFile("../cdb/projectIdFromName.cdb")
-	reader.printCdbFromNameFile("../cdb/pageIdFromName.cdb")
-	reader.printCdbFromIdFile("../cdb/projectNameFromId.cdb")
-	if projectName:
-		print "\n\n"
-		print "Project:" + projectName
-		projectId = reader.getProjectIdFromName(projectName)
-		print "ProjectId:" + hex(projectId)
-		print "ProjectName:" + reader.getProjectNameFromId(projectId)
-		print "\n\n"
-	print "Page:" + pageName
-	pageId = reader.getPageIdFromName(pageName)
-	print "PageId:" + hex(pageId)
-	print "PageName:" + reader.getPageNameFromId(pageId)
-	print "PageLinks:"
-	mpp = MyPrettyPrinter()
-	mpp.pprint(reader.getPageLinksFromId(pageId))
-	print "PageProjects:"
-	mpp.pprint(reader.getPageProjectsFromId(pageId))
-	print "\n\n"
+    reader = MediaWikiCdbReader("../cdb/")
+    reader.printCdbFromNameFile("../cdb/projectIdFromName.cdb")
+    reader.printCdbFromNameFile("../cdb/pageIdFromName.cdb")
+    reader.printCdbFromIdFile("../cdb/projectNameFromId.cdb")
+    if projectName:
+        print "\n\n"
+        print "Project:" + projectName
+        projectId = reader.getProjectIdFromName(projectName)
+        print "ProjectId:" + hex(projectId)
+        print "ProjectName:" + reader.getProjectNameFromId(projectId)
+        print "\n\n"
+    print "Page:" + pageName
+    pageId = reader.getPageIdFromName(pageName)
+    print "PageId:" + hex(pageId)
+    print "PageName:" + reader.getPageNameFromId(pageId)
+    print "PageLinks:"
+    mpp = MyPrettyPrinter()
+    mpp.pprint(reader.getPageLinksFromId(pageId))
+    print "PageProjects:"
+    mpp.pprint(reader.getPageProjectsFromId(pageId))
+    print "\n\n"
 
 
 def example_function(param):

@@ -82,7 +82,8 @@ class CdbDict(dict):
         for i in values:
             # add key,value
             maker.add(self._pack_key(i), self._pack_value(values[i]))
-        print "Added %d records to CDB %s (fd %d)" % (maker.numentries, maker.fn, maker.fd)
+        print "Added %d records to CDB %s (fd %d)" \
+            % (maker.numentries, maker.fn, maker.fd)
         maker.finish()
         del(maker)
         self.cdb = cdb.init(self.filename)
@@ -128,7 +129,9 @@ class CdbDictIntKey(CdbDict):
 
 
 class CdbDictIntValue(CdbDict):
-    """Dictionary over a CDB file, values are 32 bit integers keys are strings"""
+    """
+    Dictionary over a CDB file, values are 32 bit integers keys are strings
+    """
 
     def _pack_value(self, value):
         return self.struct.pack(value)
