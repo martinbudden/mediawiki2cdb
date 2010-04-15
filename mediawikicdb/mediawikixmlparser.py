@@ -12,10 +12,12 @@ import xml.sax.handler
 import re
 import sys
 
+
 class MediaWikiHandler(xml.sax.handler.ContentHandler):
 	def __init__(self):
+		xml.sax.handler.ContentHandler.__init__(self)
 		self.stack = []
-		self.elementIndex =0
+		self.elementIndex = 0
 		self.limit = 100000
 		self.dispCount = 0
 		self.count = 0
@@ -24,16 +26,16 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 		self.nextId = long(-1)
 		self.title = ""
 		self.text = ""
-		self.pages = {} # pageFromName
+		self.pages = {}  # pageFromName
 		self.pageRedirects = {}
-		self.templates = {} #templateIdFromName
-		self.templateRedirects = {} #templateRedirectFromName
+		self.templates = {}  # templateIdFromName
+		self.templateRedirects = {}  # templateRedirectFromName
 		self.talkpages = {}
 
 	def startElement(self, name, attributes):
 		self.elementIndex += 1
 		if self.elementIndex > self.limit and self.limit > 0:
-			raise SAXException('Reached limit count') # stop parsing
+			raise SAXException('Reached limit count')  # stop parsing
 		self.stack.append(name)
 		self.inElement = name
 		if name == "page":
@@ -46,11 +48,11 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 			self.title = data.encode("utf-8")
 			self.dispCount += 1
 			self.count += 1
-			if self.dispCount==100:
+			if self.dispCount == 100:
 				self.dispCount = 0
 				sys.stderr.write(str(self.count) + ":" + self.title + "\n")
 				#print str(self.count) + ":" + self.title
-		elif self.inElement == "id" and self.id == 0 and self.stack[len(self.stack)-2] == "page":
+		elif self.inElement == "id" and self.id == 0 and self.stack[len(self.stack) - 2] == "page":
 			if data.isdigit():
 				self.id = long(data)
 		elif self.inElement == "text":
@@ -67,9 +69,9 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 				# deal with the most common case, a normal page, first
 				r = self.text.lstrip()[0:9]
 				if r[0] == "#" and r.upper() == "#REDIRECT":
-					self.pageRedirects[self.title] = {'id':self.id,'redirect':self.getRedirect(self.text)}
+					self.pageRedirects[self.title] = {'id': self.id, 'redirect': self.getRedirect(self.text)}
 				else:
-					self.pages[self.title] = {'id':self.id,'links':self.getPageLinks(self.text)}
+					self.pages[self.title] = {'id': self.id, 'links': self.getPageLinks(self.text)}
 			elif self.title.startswith("Template:"):
 				title = self.title[9:]
 				r = self.text.lstrip()[0:9]
@@ -77,12 +79,12 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 					redirect = self.getRedirect(self.text)
 					if redirect.startswith("Template:"):
 						redirect = redirect[9:]
-					self.templateRedirects[title] = {'id':self.id,'redirect':redirect}
+					self.templateRedirects[title] = {'id': self.id, 'redirect': redirect}
 				else:
-					self.templates[title] = {'id':self.id}
+					self.templates[title] = {'id': self.id}
 			elif self.title.startswith("Talk:"):
 				# the projects a page belongs to are listed in its talk pages
-				self.talkpages[self.title[5:]] = {'id':self.id,'projects':self.getProjects(self.text)}
+				self.talkpages[self.title[5:]] = {'id': self.id, 'projects': self.getProjects(self.text)}
 			elif self.title.startswith("Media:") or\
 					self.title.startswith("Special:") or\
 					self.title.startswith("User:") or\
@@ -106,9 +108,9 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 				# the page is not in any namespace, so it must just be a normal page with a ":" in its title
 				r = self.text.lstrip()[0:9]
 				if r[0] == "#" and r.upper() == "#REDIRECT":
-					self.pageRedirects[self.title] = {'id':self.id,'redirect':self.getRedirect(self.text)}
+					self.pageRedirects[self.title] = {'id': self.id, 'redirect': self.getRedirect(self.text)}
 				else:
-					self.pages[self.title] = {'id':self.id,'links':self.getPageLinks(self.text)}
+					self.pages[self.title] = {'id': self.id, 'links': self.getPageLinks(self.text)}
 
 	def getRedirect(self, text):
 		redirect = ""
@@ -119,15 +121,15 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 		return redirect
 
 	def getProjects(self, text):
-		classes = {'fa':7,'ga':6,'a':5,'b':4,'c':3,'start':2,'stub':1,'list':0,'':-1}
-		imps = {'top':3,'high':2,'mid':1,'low':0,'':-1}
+		classes = {'fa': 7, 'ga': 6, 'a': 5, 'b': 4, 'c': 3, 'start': 2, 'stub': 1, 'list': 0, '': -1}
+		imps = {'top': 3, 'high': 2, 'mid': 1, 'low': 0, '': -1}
 		projects = {}
 		t = re.compile(r"{{([^{}]*)}}")
 		i = re.compile(r"importance=(\w*)")
 		c = re.compile(r"class=(\w*)")
 		for match in t.finditer(text):
 			template = match.group(1)
-			if template.find("class=")!=-1 or template.find("importance=")!=-1:
+			if template.find("class=") != -1 or template.find("importance=") != -1:
 				# if the template contains either a class or an importance parameter, then assume it is a project template
 				importance = -1
 				m = i.search(template)
@@ -144,11 +146,11 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 					if val:
 						cls = val
 				pos = template.find("|")
-				if pos!=-1:
+				if pos != -1:
 					template = template[0:pos].strip()
 					if template.startswith("Template:"):
 						template = template[9:]
-					projects[template] = {'class':cls,'importance':importance}
+					projects[template] = {'class': cls, 'importance': importance}
 		return projects
 
 	def getPageLinks(self, text):
@@ -157,16 +159,15 @@ class MediaWikiHandler(xml.sax.handler.ContentHandler):
 		for match in p.finditer(text):
 			link = match.group(1)
 			pos = link.find("|")
-			if pos!=-1:
+			if pos != -1:
 				link = link[0:pos]
 			pos = link.find("#")
-			if len(link) > 0 and pos != 0: # '#' in pos 0 is link to section in same page, so do not add to pagelinks
-				if pos!=-1:
+			if len(link) > 0 and pos != 0:  # '#' in pos 0 is link to section in same page, so do not add to pagelinks
+				if pos != -1:
 					link = link[0:pos]
-				link = link[0].upper() + link[1:].replace('_',' ') if len(link) > 1 else link[0].upper()
+				link = link[0].upper() + link[1:].replace('_', ' ') if len(link) > 1 else link[0].upper()
 				pagelinks.add(link)
 		return pagelinks
-
 
 
 def parseMediaWikiXMLExport(filename):
@@ -186,4 +187,3 @@ def parseMediaWikiXMLExport(filename):
 	except SAXException:
 		print "caught"
 	return handler
-

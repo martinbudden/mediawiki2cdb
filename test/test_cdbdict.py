@@ -1,144 +1,157 @@
 """
-MediaWiki CDB dictionary test module.
+CDB dictionary test module.
 """
 
 import unittest
-from mediawikicdb.mediawikicdbdict import CdbDict, CdbDictIdFromName, CdbDictNameFromId, CdbDictPageFromId, CdbDictPageLinksFromId, CdbDictPageProjectsFromId
+import os
+from mediawikicdb.cdbdict import CdbDict, CdbDictIntKey, CdbDictIntValue
 
 
-class MediaWikiCDBDictTestCase(unittest.TestCase):
+class CDBDictTestCase(unittest.TestCase):
 
     def setUp(self):
-        pass
-
+        self.dir = "testcdb/"
+        if not os.path.exists(self.dir):
+            os.makedirs(self.dir)
 
     def tearDown(self):
         pass
 
     def test_pageCdbDict(self):
-        d = CdbDict("cdb/pageIdFromName.cdb");
+        filename = "testcdb/temp.cdb"
+        if os.path.exists(filename):
+            os.remove(filename)
 
-        # test __iter__
-        try:
-            for i in d:
-                pass
-        except NotImplementedError:
-            pass
-
-        # test __getitem__
-        try:
-            v = d[0]
-        except NotImplementedError:
-            pass
-
-        # test keys()
-        try:
-            keys = d.keys()
-        except NotImplementedError:
-            pass
+        d = CdbDict(filename)
 
         # test __delitem__
         try:
             del d[0]
+            self.assertTrue(False)
         except TypeError:
             pass
 
         # test __setitem__
         try:
             d[0] = 0
+            self.assertTrue(False)
         except TypeError:
             pass
 
-    def test_pageNameFromId(self):
-        """Test page ids"""
-        pageIdFromName = CdbDictIdFromName("cdb/pageIdFromName.cdb")
-        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
-        for i in pageNameFromId:
-            name = pageNameFromId[i]
-            print "name:",name
-            id = pageIdFromName[name['name']]['id']
-            #print "pagei",i,"id",id,"name",name
-            self.assertEqual(i,id)
-
         # test iter
-        i = pageIdFromName.__iter__()
-        self.assertEqual(i,i.__iter__())
+        i = d.__iter__()
+        self.assertEqual(i, i.__iter__())
 
-        # test keys
-        result = pageIdFromName.keys()
-        expected = ['A', 'B', 'Genetics', 'Biochemistry', '\xc3\x86', 'EBay', 'Cell nucleus', '\xc3\x9f', 'Deoxyribonuclease I', 'DNA']
-        #self.assertEqual(result,expected)
-        result = pageNameFromId.keys()
-        expected = [290, 3783, 12266, 198274, 5507057, 3954, 7955, 184309, 6235, 130495]
-        #self.assertEqual(result,expected)
+        # test _pack_value and _unpack_value
+        expected = 'abcde'
+        result = d._unpack_value(d._pack_value(expected))
+        self.assertEqual(result, expected)
 
+        # test _pack_key and _unpack_key
+        expected = 'abcde'
+        result = d._unpack_key(d._pack_key(expected))
+        self.assertEqual(result, expected)
 
-    def test_pageIdFromName(self):
-        """Test page names"""
-        pageIdFromName = CdbDictIdFromName("cdb/pageIdFromName.cdb")
-        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
+        testPages = {'k1': 'v1', 'k2': 'v2', 'k3': 'v3'}
+        d.update(testPages)
+
+        self.assertEqual(len(d), len(testPages))
+        for i in testPages:
+            expected = testPages[i]
+            result = d[i]
+            print "i, e, r", i, expected, result
+            self.assertEqual(result, expected)
+
+        os.remove(filename)
+
+    def test_intKey(self):
+        """Test dictionary with integer key"""
+        testPages = { \
+            290: 'A',
+            3783: 'B',
+            12266: 'Genetics',
+            3954: 'Biochemistry',
+            130495: 'EBay',
+            6235: 'Cell nucleus',
+            5507057: 'Deoxyribonuclease I',
+            7955: 'DNA'}
+        pageIntFromName = CdbDictIntKey(self.dir + "pageIntKey.cdb")
+
+        # test _pack_value and _unpack_value
+        expected = 'abcde'
+        result = pageIntFromName._unpack_value(pageIntFromName._pack_value(expected))
+        self.assertEqual(result, expected)
+
+        # test _pack_key and _unpack_key
+        expected = 1234
+        result = pageIntFromName._unpack_key(pageIntFromName._pack_key(expected))
+        self.assertEqual(result, expected)
+
+        pageIntFromName.clear()
+        pageIntFromName.update(testPages)
+        self.assertEqual(len(pageIntFromName), len(testPages))
+
+        for i in testPages:
+            expected = testPages[i]
+            result = pageIntFromName[i]
+            self.assertEqual(result, expected)
+        pageIntFromName.clear()
+        self.assertEqual(len(pageIntFromName), 0)
+
+    def test_intValue(self):
+        """Test dictionary with integer values"""
+        testPages = { \
+            'A': 290,
+            'B': 3783,
+            'Genetics': 12266,
+            'Biochemistry': 3954,
+            'EBay': 130495,
+            'Cell nucleus': 6235,
+            'Deoxyribonuclease I': 5507057,
+            'DNA': 7955}
+        #writer = mediawikicdbwriter.MediaWikiCdbWriter()
+        #writer.writeCdbIdFromName(self.dir+"pageIdFromName.cdb", testPages)
+        pageIntValue = CdbDictIntValue(self.dir + "pageIntValue.cdb")
+
+        # test _pack_value and _unpack_value
+        expected = 1234
+        result = pageIntValue._unpack_value(pageIntValue._pack_value(expected))
+        self.assertEqual(result, expected)
+
+        # test _pack_key and _unpack_key
+        expected = 'abcde'
+        result = pageIntValue._unpack_key(pageIntValue._pack_key(expected))
+        self.assertEqual(result, expected)
+
+        pageIntValue.clear()
+        pageIntValue.update(testPages)
+
+        self.assertEqual(len(pageIntValue), len(testPages))
+        for i in testPages:
+            expected = testPages[i]
+            result = pageIntValue[i]
+            self.assertEqual(result, expected)
         return
-        for i in pageIdFromName:
-            id = pageIdFromName[i]
-            print "pagei",i,"id",id
-            name = pageNameFromId[id]
-            print "pagei",i,"id",id,"name",name
-            self.assertEqual(i,name)
+
+        pageIntValue['D'] = 1234
+        testPages['D'] = 1234
+        self.assertEqual(len(pageIntValue), len(testPages))
+        for i in testPages:
+            expected = testPages[i]
+            result = pageIntValue[i]
+            self.assertEqual(result, expected)
+
+        testPages['E'] = 1235
+        testPages['F'] = 1236
+        pageIntValue.update({'E': 1235, 'F': 1236})
+        self.assertEqual(len(pageIntValue), len(testPages))
+        for i in testPages:
+            print "bb", i
+            expected = testPages[i]['id']
+            result = pageIntValue[i]
+            self.assertEqual(result, expected)
+
         self.assertTrue(False)
-
-
-    def test_projectNameFromId(self):
-        """Test project ids"""
-        projectIdFromName = CdbDictIdFromName("cdb/projectIdFromName.cdb")
-        projectNameFromId = CdbDictNameFromId("cdb/projectNameFromId.cdb")
-        return
-        for i in projectNameFromId:
-            name = projectNameFromId[i]
-            id = projectIdFromName[name]
-            #print "proji",i,"id",id,"name",name
-            self.assertEqual(i,id)
-
-
-    def test_projectIdFromName(self):
-        """Test project names"""
-        return
-        projectIdFromName = CdbDictIdFromName("cdb/projectIdFromName.cdb")
-        projectNameFromId = CdbDictNameFromId("cdb/projectNameFromId.cdb")
-        for i in projectIdFromName:
-            id = projectIdFromName[i]
-            name = projectNameFromId[id]
-            #print "proji",i,"id",id,"name",name
-            self.assertEqual(i,name)
-
-
-    def test_pageLinksFromId(self):
-        """Test page links"""
-        pageLinksFromId = CdbDictPageLinksFromId("cdb/pageLinksFromId.cdb")
-        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
-        return
-        print "links"
-        for i in pageLinksFromId:
-            links = pageLinksFromId[i]
-            name = pageNameFromId[i]
-            print "id:",i,"name:",name,"links:",links
-        #self.assertTrue(False)
-
-
-    def test_pageProjectsFromId(self):
-        """Test page projects"""
-        pageProjectsFromId = CdbDictPageProjectsFromId("cdb/pageProjectsFromId.cdb")
-        pageNameFromId = CdbDictNameFromId("cdb/pageNameFromId.cdb")
-        projectNameFromId = CdbDictNameFromId("cdb/projectNameFromId.cdb")
-        return
-        print "projects"
-        for i in pageProjectsFromId:
-            projects = pageProjectsFromId[i]
-            name = pageNameFromId[i]
-            print "id:",i,"name:",name#,"projects:",projects
-            for j in projects:
-                print projectNameFromId[j],projects[j]
-            print
-        #self.assertTrue(False)
 
 
 if __name__ == "__main__":

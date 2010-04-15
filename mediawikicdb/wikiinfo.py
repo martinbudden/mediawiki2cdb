@@ -16,7 +16,7 @@ class WikiInfo():
 		self.pageFromId = {}
 		self.templateFromId = {}
 
-	def set(self,pages,pageRedirects,templates,templateRedirects,talkpages):
+	def set(self, pages, pageRedirects, templates, templateRedirects, talkpages):
 		self.pages = pages
 		self.pageRedirects = pageRedirects
 		self.templates = templates
@@ -65,12 +65,12 @@ class WikiInfo():
 					linkIds.add(linkId)
 				else:
 					linkId = j
-					normalizedJ = j[0].upper() + j[1:].replace('_',' ') if len(j) > 1 else j[0].upper()
+					normalizedJ = j[0].upper() + j[1:].replace('_', ' ') if len(j) > 1 else j[0].upper()
 					if normalizedJ in self.pages:
 						linkId = self.pages[normalizedJ]['id']
 						linkIds.add(linkId)
 				#linkIds.add(linkId)
-			self.pageFromId[self.pages[i]['id']] = {'name':i,'links':linkIds}
+			self.pageFromId[self.pages[i]['id']] = {'name': i, 'links': linkIds}
 
 	def setPageProjectIds(self):
 		for i in self.pageFromId:
@@ -83,16 +83,16 @@ class WikiInfo():
 			cls = -1
 			imp = -1
 			for j in projects:
-				id = None
+				ident = None
 				if j in self.templates:
-					id = self.templates[j]['id']
+					ident = self.templates[j]['id']
 				else:
-					normalizedJ = j[0].upper() + j[1:].replace('_',' ') if len(j) > 1 else j[0].upper()
+					normalizedJ = j[0].upper() + j[1:].replace('_', ' ') if len(j) > 1 else j[0].upper()
 					if normalizedJ in self.templates:
-						id = self.templates[normalizedJ]['id']
+						ident = self.templates[normalizedJ]['id']
 				p = projects[j]
-				if id:
-					projectIds[id] = p
+				if ident:
+					projectIds[ident] = p
 				#else:
 				#	print "no template for project:"+j
 				if p['class'] > cls:
@@ -105,5 +105,4 @@ class WikiInfo():
 
 	def setTemplateFromId(self):
 		for i in self.templates:
-			self.templateFromId[self.templates[i]['id']] = {'name':i}
-
+			self.templateFromId[self.templates[i]['id']] = {'name': i}

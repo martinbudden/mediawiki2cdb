@@ -14,14 +14,14 @@ class MediaWikiXMLParserTestCase(unittest.TestCase):
         """Parse the mediawiki XML file"""
         self.handler = mediawikixmlparser.parseMediaWikiXMLExport("xml/export3.xml")
         self.pages = { \
-            'A':{'id':290}, \
-            'B':{'id':3783}, \
-            'Genetics':{'id':12266}, \
-            'Biochemistry':{'id':3954}, \
-            'EBay':{'id':130495}, \
-            'Cell nucleus':{'id':6235}, \
-            'Deoxyribonuclease I':{'id':5507057}, \
-            'DNA':{'id':7955}}
+            'A': {'id': 290}, \
+            'B': {'id': 3783}, \
+            'Genetics': {'id': 12266}, \
+            'Biochemistry': {'id': 3954}, \
+            'EBay': {'id': 130495}, \
+            'Cell nucleus': {'id': 6235}, \
+            'Deoxyribonuclease I': {'id': 5507057}, \
+            'DNA': {'id': 7955}}
             #'Messenger RNA':{'id':20232}, \
             #'Mitochondrion':{'id':19588}, \
             #'Ribosome':{'id':25766}, \
@@ -51,11 +51,11 @@ class MediaWikiXMLParserTestCase(unittest.TestCase):
             'WikiProjectBanners': {'id': 9320556}}
 
         self.templateRedirects = {'Biology': {'id': 0xa8a31aL, 'redirect': u'WikiProject Biology'}, \
-            'Cell Signaling Project': {'id': 0x533c23L,'redirect': u'WikiProject Cell Signaling'}, \
+            'Cell Signaling Project': {'id': 0x533c23L, 'redirect': u'WikiProject Cell Signaling'}, \
             'Wikiproject Evolution': {'id': 0x11b555cL, 'redirect': u'EvolWikiProject'}, \
-            'Wikiproject Genetics': {'id': 0x1082647L,'redirect': u'WikiProject Genetics'}, \
-            'Wikiproject MCB': {'id': 0x1079802L,'redirect': u'WikiProject Molecular and Cellular Biology'}, \
-            'Wikiproject mcb': {'id': 0x98b40dL,'redirect': u'WikiProject Molecular and Cellular Biology'}} \
+            'Wikiproject Genetics': {'id': 0x1082647L, 'redirect': u'WikiProject Genetics'}, \
+            'Wikiproject MCB': {'id': 0x1079802L, 'redirect': u'WikiProject Molecular and Cellular Biology'}, \
+            'Wikiproject mcb': {'id': 0x98b40dL, 'redirect': u'WikiProject Molecular and Cellular Biology'}} \
 
 
     def tearDown(self):

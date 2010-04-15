@@ -28,7 +28,7 @@ def printOutput(handler):
 	print "\npages:"
 	#mpp.pprint(handler.pages)
 	for p in handler.pages:
-		print "'"+p+"':{'id':"+str(handler.pages[p]['id'])+"},"
+		print "'" + p + "':{'id': " + str(handler.pages[p]['id']) + "},"
 
 	print "\npageRedirects:"
 	mpp.pprint(handler.pageRedirects)
@@ -40,17 +40,17 @@ def printOutput(handler):
 	mpp.pprint(handler.templateRedirects)
 
 
-def printOutputIds(handler):
-	mpp = MyPrettyPrinter()
+#def printOutputIds(handler):
+	#mpp = MyPrettyPrinter()
 	#print "\npageIds:"
 	#mpp.pprint(handler.pageIds)
 	#print "\ntemplateIds:"
 	#mpp.pprint(handler.templateIds)
 
 
-def printPage(handler,pageName):
-	mpp = MyPrettyPrinter()
-	page = handler.pages[pageName]
+#def printPage(handler,pageName):
+	#mpp = MyPrettyPrinter()
+	#page = handler.pages[pageName]
 
 	#print "\npage: " + pageName + ":"
 	#mpp.pprint(page)
@@ -63,7 +63,7 @@ def printPage(handler,pageName):
 	#mpp.pprint(handler.talkpages)
 
 
-def readCdbs(projectName,pageName):
+def readCdbs(projectName, pageName):
 	reader = MediaWikiCdbReader("../cdb/")
 	reader.printCdbFromNameFile("../cdb/projectIdFromName.cdb")
 	reader.printCdbFromNameFile("../cdb/pageIdFromName.cdb")
@@ -72,13 +72,13 @@ def readCdbs(projectName,pageName):
 		print "\n\n"
 		print "Project:" + projectName
 		projectId = reader.getProjectIdFromName(projectName)
-		print "ProjectId:"+hex(projectId)
-		print "ProjectName:"+reader.getProjectNameFromId(projectId)
+		print "ProjectId:" + hex(projectId)
+		print "ProjectName:" + reader.getProjectNameFromId(projectId)
 		print "\n\n"
 	print "Page:" + pageName
 	pageId = reader.getPageIdFromName(pageName)
-	print "PageId:"+hex(pageId)
-	print "PageName:"+reader.getPageNameFromId(pageId)
+	print "PageId:" + hex(pageId)
+	print "PageName:" + reader.getPageNameFromId(pageId)
 	print "PageLinks:"
 	mpp = MyPrettyPrinter()
 	mpp.pprint(reader.getPageLinksFromId(pageId))
@@ -103,11 +103,11 @@ def example_function(param):
     printOutput(info)
     printOutputIds(info)
     pageName = "Cell nucleus"
-    printPage(info,pageName)
+    printPage(info, pageName)
 
     writer = MediaWikiCdbWriter()
-    writer.writeCdbFiles(info,"../cdb/")
-    readCdbs("EvolWikiProject",pageName)
+    writer.writeCdbFiles(info, "../cdb/")
+    readCdbs("EvolWikiProject", pageName)
 
     #pageName = "ß"
     #parseXmlFile("../xml/export3.xml",pageName)
@@ -121,7 +121,7 @@ def main():
     #parser.add_option("-d","--date",dest="date",help="published DATE",metavar="DATE")
     parser.add_option("-v", action="store_true", dest="verbose", default=False, help="print status messages to stdout")
 
-    (options,args) = parser.parse_args()
+    (options, args) = parser.parse_args()
     if len(args) == 0:
         param = ""
     else:
