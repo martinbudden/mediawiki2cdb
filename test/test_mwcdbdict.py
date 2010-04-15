@@ -174,11 +174,10 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_pageLinksFromId(self):
         """Test page links"""
-        return
         pageLinksFromId = CdbDictPageLinksFromId("cdb/pageLinksFromId.cdb")
 
         # test _pack_value and _unpack_value
-        expected = {1439: {'class': 3, 'importance': -1, 'links': set([4, 5, 6])}}
+        expected = {'class': 3, 'importance': -1, 'links': set([4, 5, 6])}
         result = pageLinksFromId._unpack_value(pageLinksFromId._pack_value(expected))
         self.assertEqual(result, expected)
 
@@ -197,11 +196,11 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def test_pageProjectsFromId(self):
         """Test page projects"""
-        return
         pageProjectsFromId = CdbDictPageProjectsFromId("cdb/pageProjectsFromId.cdb")
 
         # test _pack_value and _unpack_value
-        expected = {1397: {'class': 4, 'importance': -1}}
+        expected = {'class': 7, 'importance': -1,
+                 'projects': {200: {'class': 33, 'importance': -1}, 300: {'class': 8, 'importance': 9}, 400: {'class': 21, 'importance': 22}}}
         result = pageProjectsFromId._unpack_value(pageProjectsFromId._pack_value(expected))
         self.assertEqual(result, expected)
 

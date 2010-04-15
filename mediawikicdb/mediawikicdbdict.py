@@ -11,7 +11,8 @@ from cdbdict import CdbDict, CdbDictIntKey, CdbDictIntValue
 
 class CdbDictIdFromName(CdbDict):
     """
-    Dictionary over a CDB file, values are 32 bit integers keys are strings
+    Dictionary over a CDB file, keys are strings,
+    values are named 32 bit integers.
     """
 
     def _pack_value(self, value):
@@ -26,7 +27,8 @@ class CdbDictIdFromName(CdbDict):
 
 class CdbDictNameFromId(CdbDictIntKey):
     """
-    Dictionary over a CDB file, values are strings keys are 32 bit integers.
+    Dictionary over a CDB file: keys are 32 bit integers,
+    values are named strings
     """
 
     def __getitem__(self, key):
@@ -43,7 +45,8 @@ class CdbDictNameFromId(CdbDictIntKey):
 
 class CdbDictPageLinksFromId(CdbDictIntKey):
     """
-    Dictionary over a CDB file, values are pagelinks, keys are 32 bit integers.
+    Dictionary over a CDB file: keys are 32 bit integers,
+    values are pagelinks.
     """
 
     def __getitem__(self, key):
@@ -63,7 +66,7 @@ class CdbDictPageLinksFromId(CdbDictIntKey):
         page['importance'] = importance
 
         pageLinks = set()
-        count = len(v) / 4 - 2
+        count = len(v) / 4 - 1
         while count > 0:
             count -= 1
             t = self.struct.unpack(v[offset:offset + 4])[0]
@@ -72,17 +75,38 @@ class CdbDictPageLinksFromId(CdbDictIntKey):
         page['links'] = pageLinks
         return page
 
+    def _pack_value(self, v):
+        linkIds = v['links']
+        buf = create_string_buffer(4 + len(linkIds) * 4)
+        offset = 0
+        importance = v['importance']
+        if importance == -1:
+            importance = 0xff
+        struct.pack_into("<l", buf, offset, (v['class'] << 8) | importance)
+        offset += 4
+        for j in linkIds:
+            struct.pack_into("<l", buf, offset, j)
+            offset += 4
+        return buf
+
 
 class CdbDictPageProjectsFromId(CdbDictIntKey):
     """
-    Dictionary over a CDB file, values are page projects,
-    keys are 32 bit integers.
+    Dictionary over a CDB file: keys are 32 bit integers,
+    values are page projects.
     """
 
     def _unpack_value(self, v):
-        #v = self.cdb.get(self.struct.pack(key))
+        page = {}
+        t = self.struct.unpack(v[0:4])[0]
+        offset = 4
+        page['class'] = t >> 8
+        importance = t & 0xff
+        if importance == 0xff:
+            importance = -1
+        page['importance'] = importance
+
         projects = {}
-        offset = 0
         count = (len(v) - 4) / 8
         while count > 0:
             count -= 1
@@ -96,23 +120,33 @@ class CdbDictPageProjectsFromId(CdbDictIntKey):
             if importance == 0xff:
                 importance = -1
             projects[ident] = {'class': cls, 'importance': importance}
-        return projects
+        page['projects'] = projects
+        return page
 
     def _pack_value(self, v):
-        linkIds = v['links']
-        buf = create_string_buffer(4 + len(linkIds) * 4)
+        projects = v['projects']
+        buf = create_string_buffer(4 + len(projects) * 4 * 2)
         offset = 0
-        struct.pack_into("<l", buf, offset, (v['class'] << 8) | v['importance'])
+        importance = v['importance']
+        if importance == -1:
+            importance = 0xff
+        struct.pack_into("<l", buf, offset, (v['class'] << 8) | importance)
         offset += 4
-        for j in linkIds:
+        for j in projects:
             struct.pack_into("<l", buf, offset, j)
+            offset += 4
+            importance = projects[j]['importance']
+            if importance == -1:
+                importance = 0xff
+            struct.pack_into("<l", buf, offset, (projects[j]['class'] << 8) | importance)
             offset += 4
         return buf
 
 
 class CdbDictPageFromId(CdbDictIntKey):
     """
-    Dictionary over a CDB file, values are page projects, keys are 32 bit integers.
+    Dictionary over a CDB file: keys are 32 bit integers,
+    values are pages.
     """
 
     def __getitem__(self, key):
