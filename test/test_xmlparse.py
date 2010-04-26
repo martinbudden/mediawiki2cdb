@@ -5,7 +5,6 @@ MediaWiki XML parser test module.
 
 import unittest
 from mediawikicdb import mediawikixmlparser
-from mediawikicdb import test
 
 
 class MediaWikiXMLParserTestCase(unittest.TestCase):
@@ -59,6 +58,7 @@ class MediaWikiXMLParserTestCase(unittest.TestCase):
 
 
     def tearDown(self):
+        """No tearDown required."""
         pass
 
     def test_pages(self):

@@ -91,10 +91,10 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
              290: {'name': 'A', 'class': 1, 'importance': 2, 'links': set([4, 5, 6]), 'projects': {100: {'class': 8, 'importance': 9}}},
              3783: {'name': 'B', 'class': 4, 'importance': 5, 'links': set([1, 2, 3]), 'projects': {200: {'class': 2, 'importance': -1}}},
              4783: {'name': 'C', 'class': 6, 'importance': 7, 'links': set([]), 'projects': {}},
-             4783: {'name': 'D', 'class': 9, 'importance': 4, 'links': set([9, 100, 1001]), 'projects': {}},
-             5783: {'name': 'DEF', 'class': 2, 'importance': 1, 'links': set([1, 2, 3, 4, 5, 6]), \
+             5783: {'name': 'D', 'class': 9, 'importance': 4, 'links': set([9, 100, 1001]), 'projects': {}},
+             6783: {'name': 'DEF', 'class': 2, 'importance': 1, 'links': set([1, 2, 3, 4, 5, 6]), \
                  'projects': {200: {'class': 2, 'importance': 3}, 300: {'class': 3, 'importance': 4}, 400: {'class': 4, 'importance': 5}}},
-             6783: {'name': 'GG', 'class': 0, 'importance': -1, 'links': set([9, 100, 1001]), 'projects': {}}}
+             7783: {'name': 'GG', 'class': 0, 'importance': -1, 'links': set([9, 100, 1001]), 'projects': {}}}
 
         #writer = mediawikicdbwriter.MediaWikiCdbWriter()
         #writer.writeCdbPages(self.dir+"pageFromId.cdb", testPages)

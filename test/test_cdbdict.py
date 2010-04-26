@@ -5,16 +5,20 @@ CDB dictionary test module.
 import unittest
 import os
 from mediawikicdb.cdbdict import CdbDict, CdbDictIntKey, CdbDictIntValue
+#from mediawikicdb import CdbDict, CdbDictIntKey, CdbDictIntValue
 
 
 class CDBDictTestCase(unittest.TestCase):
+    """Basic test for cdbdict."""
 
     def setUp(self):
+        """Create directory for testing."""
         self.dir = "testcdb/"
         if not os.path.exists(self.dir):
             os.makedirs(self.dir)
 
     def tearDown(self):
+        """No teardown required."""
         pass
 
     def test_pageCdbDict(self):

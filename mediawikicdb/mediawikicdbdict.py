@@ -2,11 +2,13 @@
 #coding=utf-8
 #file: mediawikicdb.py
 
+"""
+CDB dictionary over MediaWiki pages.
+"""
+
 import struct
-import cdb
-import os
 from ctypes import create_string_buffer
-from cdbdict import CdbDict, CdbDictIntKey, CdbDictIntValue
+from cdbdict import CdbDict, CdbDictIntKey
 
 
 class CdbDictIdFromName(CdbDict):
@@ -15,14 +17,16 @@ class CdbDictIdFromName(CdbDict):
     values are named 32 bit integers.
     """
 
+    def __getitem__(self, key):
+        return {'id': self.struct.unpack(self.cdb.get(key))[0]}
+
     def _pack_value(self, value):
+        """Pack the value's id into a 32-bit little endian integer."""
         return self.struct.pack(value['id'])
 
     def _unpack_value(self, value):
+        """Unpack the value into an id item."""
         return {'id': self.struct.unpack(value)[0]}
-
-    def __getitem__(self, key):
-        return {'id': self.struct.unpack(self.cdb.get(key))[0]}
 
 
 class CdbDictNameFromId(CdbDictIntKey):
@@ -37,9 +41,11 @@ class CdbDictNameFromId(CdbDictIntKey):
         return self._unpack_value(v)
 
     def _pack_value(self, v):
+        """Pack the value's name."""
         return v['name']
 
     def _unpack_value(self, v):
+        """Unpack the value into a name item."""
         return {'name': v}
 
 
@@ -55,6 +61,7 @@ class CdbDictPageLinksFromId(CdbDictIntKey):
         return self._unpack_value(v)
 
     def _unpack_value(self, v):
+        """Unpack the buffer into class, importance and links items."""
         page = {}
 
         t = self.struct.unpack(v[0:4])[0]
@@ -65,26 +72,27 @@ class CdbDictPageLinksFromId(CdbDictIntKey):
             importance = -1
         page['importance'] = importance
 
-        pageLinks = set()
+        page_links = set()
         count = len(v) / 4 - 1
         while count > 0:
             count -= 1
             t = self.struct.unpack(v[offset:offset + 4])[0]
             offset += 4
-            pageLinks.add(long(t))
-        page['links'] = pageLinks
+            page_links.add(long(t))
+        page['links'] = page_links
         return page
 
     def _pack_value(self, v):
-        linkIds = v['links']
-        buf = create_string_buffer(4 + len(linkIds) * 4)
+        """Pack the value's importance, class and links into a buffer."""
+        link_ids = v['links']
+        buf = create_string_buffer(4 + len(link_ids) * 4)
         offset = 0
         importance = v['importance']
         if importance == -1:
             importance = 0xff
         struct.pack_into("<l", buf, offset, (v['class'] << 8) | importance)
         offset += 4
-        for j in linkIds:
+        for j in link_ids:
             struct.pack_into("<l", buf, offset, j)
             offset += 4
         return buf
@@ -97,6 +105,7 @@ class CdbDictPageProjectsFromId(CdbDictIntKey):
     """
 
     def _unpack_value(self, v):
+        """Unpack the buffer into class, importance and projects items."""
         page = {}
         t = self.struct.unpack(v[0:4])[0]
         offset = 4
@@ -124,6 +133,7 @@ class CdbDictPageProjectsFromId(CdbDictIntKey):
         return page
 
     def _pack_value(self, v):
+        """Pack the value's importance, class and links into a buffer."""
         projects = v['projects']
         buf = create_string_buffer(4 + len(projects) * 4 * 2)
         offset = 0
@@ -154,11 +164,14 @@ class CdbDictPageFromId(CdbDictIntKey):
         return self._unpack_value(v)
 
     def _unpack_value(self, v):
+        """
+        Unpack the buffer into class, importance, links, projects and name.
+        """
         page = {}
         offset = 0
-        linksLen = long(self.struct.unpack(v[offset:offset + 4])[0])
+        links_len = long(self.struct.unpack(v[offset:offset + 4])[0])
         offset += 4
-        projectsLen = long(self.struct.unpack(v[offset:offset + 4])[0])
+        projects_len = long(self.struct.unpack(v[offset:offset + 4])[0])
         offset += 4
 
         t = self.struct.unpack(v[offset:offset + 4])[0]
@@ -169,17 +182,17 @@ class CdbDictPageFromId(CdbDictIntKey):
             importance = -1
         page['importance'] = importance
 
-        pageLinks = set()
-        count = linksLen
+        page_links = set()
+        count = links_len
         while count > 0:
             count -= 1
             t = self.struct.unpack(v[offset:offset + 4])[0]
             offset += 4
-            pageLinks.add(long(t))
-        page['links'] = pageLinks
+            page_links.add(long(t))
+        page['links'] = page_links
 
         projects = {}
-        count = projectsLen
+        count = projects_len
         while count > 0:
             count -= 1
             t = self.struct.unpack(v[offset:offset + 4])[0]
@@ -197,13 +210,18 @@ class CdbDictPageFromId(CdbDictIntKey):
         return page
 
     def _pack_value(self, v):
+        """
+        Pack the page's class, importance, links, projects and name into a buffer.
+        """
         name = v['name']
-        linkIds = v['links']
+        link_ids = v['links']
         projects = v['projects']
-        buf = create_string_buffer(8 + (4 + len(linkIds) * 4) + (len(projects) * 4 * 2) + len(name))
+        buf = create_string_buffer(8 + (4 + len(link_ids) * 4) +
+            (len(projects) * 4 * 2) +
+            len(name))
         # pack in the lengths of the links and projects sets
         offset = 0
-        struct.pack_into("<l", buf, offset, len(linkIds))
+        struct.pack_into("<l", buf, offset, len(link_ids))
         offset += 4
         struct.pack_into("<l", buf, offset, len(projects))
         offset += 4
@@ -214,7 +232,7 @@ class CdbDictPageFromId(CdbDictIntKey):
         struct.pack_into("<l", buf, offset, (v['class'] << 8) | importance)
         offset += 4
         # pack in the links
-        for j in linkIds:
+        for j in link_ids:
             struct.pack_into("<l", buf, offset, j)
             offset += 4
         # pack in the projects

@@ -5,10 +5,9 @@
 import struct
 import cdb
 import os
-from ctypes import create_string_buffer
 
 
-class CdbDict_iter:
+class CdbDictIter:
     """Iterator for a CDB dictionary."""
 
     def __init__(self, cdb):
@@ -19,6 +18,7 @@ class CdbDict_iter:
         return self
 
     def next(self):
+        """Return the next key for the iterator."""
         if self.key is None:
             raise StopIteration
         key = self.key
@@ -31,14 +31,14 @@ class CdbDict(dict):
 
     def __init__(self, filename):
         self.filename = filename
-        self.struct = struct.Struct("<l")
+        self.struct = struct.Struct("<l")  # "<l" is 32bit little endian integer
         if not os.path.exists(self.filename):
             open(filename, "w").close()
         self.cdb = cdb.init(filename)
         dict.__init__(self)
 
     def __iter__(self):
-        return CdbDict_iter(self.cdb)
+        return CdbDictIter(self.cdb)
 
     def __setitem__(self, key, value):
         raise TypeError("'CdbDict' object does not support item setting")
@@ -58,18 +58,31 @@ class CdbDict(dict):
         return len(self.cdb.keys())
 
     def _pack_key(self, key):
+        """
+        Method to allow subclasses to change how the key is packed. By default leave key unchanged.
+        """
         return key
 
     def _unpack_key(self, key):
+        """
+        Method to unpack key, must complement _pack_key.
+        """
         return key
 
     def _pack_value(self, value):
+        """
+        Method to allow subclasses to change how the value is packed. By default leave value unchanged.
+        """
         return value
 
     def _unpack_value(self, value):
+        """
+        Method to unpack value, must complement _pack_value.
+        """
         return value
 
     def clear(self):
+        """Remove all entries from the dictionary."""
         os.remove(self.filename)
         open(self.filename, "w").close()
         maker = cdb.cdbmake(self.filename, self.filename + ".tmp")
@@ -78,6 +91,7 @@ class CdbDict(dict):
         self.cdb = cdb.init(self.filename)
 
     def update(self, values):
+        """Add values to the dictionary."""
         maker = cdb.cdbmake(self.filename, self.filename + ".tmp")
         for i in values:
             # add key,value
@@ -89,38 +103,43 @@ class CdbDict(dict):
         self.cdb = cdb.init(self.filename)
 
     def keys(self):
+        """Return a list of the dictionary keys."""
         return self.cdb.keys()
 
 
-class CdbDictIntKey_iter(CdbDict_iter):
+class CdbDictIntKeyIter(CdbDictIter):
     """Iterator for a CDB dictionary with a 32 bit integer key"""
 
     def __init__(self, cdb):
         self.struct = struct.Struct("<l")
-        CdbDict_iter.__init__(self, cdb)
-        #super(CdbDict2_iter, self).__init__(cdb)
+        CdbDictIter.__init__(self, cdb)
+        #super(CdbDictIter, self).__init__(cdb)
 
     def next(self):
-        return self.struct.unpack(CdbDict_iter.next(self))[0]
+        """Return the next key for the iterator."""
+        return self.struct.unpack(CdbDictIter.next(self))[0]
 
 
 class CdbDictIntKey(CdbDict):
     """Dictionary over a CDB file, keys are 32 bit integers."""
 
     def __iter__(self):
-        return CdbDictIntKey_iter(self.cdb)
+        return CdbDictIntKeyIter(self.cdb)
 
     def __getitem__(self, key):
         # name from id
         return self.cdb.get(self.struct.pack(key))
 
     def _pack_key(self, key):
+        """Pack key into a 32-bit little endian integer."""
         return self.struct.pack(key)
 
     def _unpack_key(self, key):
+        """Unpack key from a 32-bit little endian integer."""
         return self.struct.unpack(key)[0]
 
     def keys(self):
+        """Return a list of the dictionary keys."""
         # very primitive implementation
         keys = self.cdb.keys()
         for i in range(0, len(keys)):
@@ -134,10 +153,15 @@ class CdbDictIntValue(CdbDict):
     """
 
     def _pack_value(self, value):
+        """Pack value into a 32-bit little endian integer."""
         return self.struct.pack(value)
 
     def _unpack_value(self, value):
+        """Unpack value from a 32-bit little endian integer."""
         return self.struct.unpack(value)[0]
 
     def __getitem__(self, key):
+        """
+        Replacing base function is a performance optimisation and is strictly unnecessary.
+        """
         return self.struct.unpack(self.cdb.get(key))[0]

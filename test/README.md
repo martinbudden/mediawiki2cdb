@@ -1,5 +1,5 @@
-Example Test Suite
-==================
+MediaWiki CDB Test Suite
+========================
 
 This directory contains the test suite.
 
