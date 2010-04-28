@@ -10,11 +10,13 @@ from mediawikicdb.mediawikicdbdict import CdbDictIdFromName, CdbDictNameFromId, 
 class MediaWikiCDBDictTestCase(unittest.TestCase):
 
     def setUp(self):
+        """Creat the testcdb directory if required."""
         self.dir = "testcdb/"
         if not os.path.exists(self.dir):
             os.makedirs(self.dir)
 
     def tearDown(self):
+        """No tearDown required"""
         pass
 
     def test_idFromName(self):
@@ -93,7 +95,7 @@ class MediaWikiCDBDictTestCase(unittest.TestCase):
              4783: {'name': 'C', 'class': 6, 'importance': 7, 'links': set([]), 'projects': {}},
              5783: {'name': 'D', 'class': 9, 'importance': 4, 'links': set([9, 100, 1001]), 'projects': {}},
              6783: {'name': 'DEF', 'class': 2, 'importance': 1, 'links': set([1, 2, 3, 4, 5, 6]), \
-                 'projects': {200: {'class': 2, 'importance': 3}, 300: {'class': 3, 'importance': 4}, 400: {'class': 4, 'importance': 5}}},
+                    'projects': {200: {'class': 2, 'importance': 3}, 300: {'class': 3, 'importance': 4}, 400: {'class': 4, 'importance': 5}}},
              7783: {'name': 'GG', 'class': 0, 'importance': -1, 'links': set([9, 100, 1001]), 'projects': {}}}
 
         #writer = mediawikicdbwriter.MediaWikiCdbWriter()

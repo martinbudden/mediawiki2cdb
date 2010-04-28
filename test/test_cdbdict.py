@@ -22,6 +22,7 @@ class CDBDictTestCase(unittest.TestCase):
         pass
 
     def test_pageCdbDict(self):
+        """Test basic CdbDict functionality"""
         filename = "testcdb/temp.cdb"
         if os.path.exists(filename):
             os.remove(filename)

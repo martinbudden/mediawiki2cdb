@@ -9,18 +9,21 @@ from mediawikicdb.mediawikicdbdict import CdbDictIdFromName, CdbDictNameFromId, 
 
 
 class MediaWikiCDBReaderTestCase(unittest.TestCase):
+    """Test the wikicdbreader."""
 
     def setUp(self):
         """Parse the MediaWiki XML file, write it out in cdb format and initialize the cdb reader"""
         self.handler = mediawikixmlparser.parseMediaWikiXMLExport("xml/export3.xml")
         self.info = wikiinfo.WikiInfo()
-        self.info.set(self.handler.pages, self.handler.pageRedirects, self.handler.templates, self.handler.templateRedirects, self.handler.talkpages)
+        self.info.set(self.handler.pages, self.handler.pageRedirects, self.handler.templates,
+                      self.handler.templateRedirects, self.handler.talkpages)
         self.info.doStuff()
         self.writer = mediawikicdbwriter.MediaWikiCdbWriter()
         self.writer.writeCdbFiles(self.info, "cdb/")
         #self.reader = wikicdbreader.WikiCdbReader("cdb/")
 
     def tearDown(self):
+        """No tearDown required"""
         pass
 
     def test_getPageIdFromName(self):

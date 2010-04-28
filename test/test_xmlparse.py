@@ -8,6 +8,7 @@ from mediawikicdb import mediawikixmlparser
 
 
 class MediaWikiXMLParserTestCase(unittest.TestCase):
+    """Test the mediawikixmlparser"""
 
     def setUp(self):
         """Parse the mediawiki XML file"""

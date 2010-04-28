@@ -8,15 +8,18 @@ from mediawikicdb import mediawikixmlparser, wikiinfo
 
 
 class MediaWikiInfoTestCase(unittest.TestCase):
+    """Basic wikiinfo test code."""
 
     def setUp(self):
         """Parse the mediawiki XML file"""
         self.handler = mediawikixmlparser.parseMediaWikiXMLExport("xml/export3.xml")
         self.info = wikiinfo.WikiInfo()
-        self.info.set(self.handler.pages, self.handler.pageRedirects, self.handler.templates, self.handler.templateRedirects, self.handler.talkpages)
+        self.info.set(self.handler.pages, self.handler.pageRedirects, self.handler.templates,
+                      self.handler.templateRedirects, self.handler.talkpages)
         self.info.doStuff()
 
     def tearDown(self):
+        """No tearDown required"""
         pass
 
     def test_pageIdFromId(self):
